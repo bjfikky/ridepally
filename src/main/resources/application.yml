@@ -1,0 +1,13 @@
+spring:
+    application:
+        name: @project.name@
+        version: @project.version@
+    datasource:
+        url: jdbc:postgresql://localhost:5432/ridepally
+        username:
+        password:
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
