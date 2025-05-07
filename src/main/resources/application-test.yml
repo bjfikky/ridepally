@@ -15,7 +15,7 @@ spring:
 app:
     jwt:
         # Use a strong secret key in production
-        secret: ridepally4968254680SecureSecretKeyForJwtAuthenticationAndAuthorization
+        secret: ridepallyTest4968254680SecureSecretKeyForJwtAuthenticationAndAuthorization
         expirationMs: 3600000      # 1 hour
         refreshExpirationMs: 86400000   # 24 hours
     nonce:
