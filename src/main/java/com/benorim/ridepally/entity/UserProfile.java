@@ -3,10 +3,12 @@ package com.benorim.ridepally.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -46,6 +49,10 @@ public class UserProfile {
 
     @Embedded
     private Location location;
+
+    @OneToMany(mappedBy = "userProfile", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Motorcycle> motorcycles;
 
     @Setter(AccessLevel.NONE)
     @UpdateTimestamp
