@@ -30,9 +30,13 @@ import java.util.UUID;
 @Builder
 public class RidepallyUser {
     @Id
-    @Column(nullable = false)
-    @Setter(AccessLevel.NONE)
-    private UUID id = UUID.randomUUID();
+    @Column(nullable = false, updatable = false)
+    private UUID id;
+
+    // Custom static builder method that ensures ID is always set
+    public static RidepallyUserBuilder builder() {
+        return new RidepallyUserBuilder().id(UUID.randomUUID());
+    }
 
     @Column(nullable = false, unique = true)
     private String email;
