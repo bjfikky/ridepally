@@ -1,5 +1,7 @@
 package com.benorim.ridepally.service;
 
+import com.benorim.ridepally.dto.profile.CreateUserProfileRequestDTO;
+import com.benorim.ridepally.dto.profile.UpdateUserProfileRequestDTO;
 import com.benorim.ridepally.entity.UserProfile;
 import com.benorim.ridepally.entity.RidepallyUser;
 import com.benorim.ridepally.exception.DataOwnershipException;
@@ -23,16 +25,22 @@ public class UserProfileService {
     private final AuthService authService;
 
     @Transactional
-    public UserProfile createUserProfile(RidepallyUser ridepallyUser, String firstName, String lastName, String displayName) {
-        if (userProfileRepository.existsByDisplayName(displayName)) {
+    public UserProfile createUserProfile(UUID userId, CreateUserProfileRequestDTO request) {
+        RidepallyUser ridepallyUser = ridepallyUserRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+        if (userProfileRepository.existsByDisplayName(request.getDisplayName())) {
             throw new IllegalArgumentException("Display name is already taken");
         }
 
         UserProfile userProfile = UserProfile.builder()
                 .ridepallyUser(ridepallyUser)
-                .firstName(firstName)
-                .lastName(lastName)
-                .displayName(displayName)
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .displayName(request.getDisplayName())
+                .city(request.getCity())
+                .state(request.getState())
+                .zipCode(request.getZipCode())
                 .build();
 
         return userProfileRepository.save(userProfile);
@@ -48,7 +56,7 @@ public class UserProfileService {
     }
 
     @Transactional
-    public UserProfile updateUserProfile(UUID userId, String firstName, String lastName, String displayName) {
+    public UserProfile updateUserProfile(UUID userId, UpdateUserProfileRequestDTO request) {
         UserProfile userProfile = getUserProfile(userId);
         
         // Check if the user is authorized to update this profile
@@ -57,13 +65,17 @@ public class UserProfileService {
         }
 
         // Check if display name is being changed and if it's already taken
-        if (!userProfile.getDisplayName().equals(displayName) && userProfileRepository.existsByDisplayName(displayName)) {
+        if (!userProfile.getDisplayName().equals(request.getDisplayName()) && 
+                userProfileRepository.existsByDisplayName(request.getDisplayName())) {
             throw new IllegalArgumentException("Display name is already taken");
         }
 
-        userProfile.setFirstName(firstName);
-        userProfile.setLastName(lastName);
-        userProfile.setDisplayName(displayName);
+        userProfile.setFirstName(request.getFirstName());
+        userProfile.setLastName(request.getLastName());
+        userProfile.setDisplayName(request.getDisplayName());
+        userProfile.setCity(request.getCity());
+        userProfile.setState(request.getState());
+        userProfile.setZipCode(request.getZipCode());
 
         return userProfileRepository.save(userProfile);
     }
@@ -76,5 +88,12 @@ public class UserProfileService {
     @Transactional(readOnly = true)
     public boolean existsByDisplayName(String displayName) {
         return userProfileRepository.existsByDisplayName(displayName);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean existsByUserId(UUID userId) {
+        RidepallyUser ridepallyUser = ridepallyUserRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+        return userProfileRepository.findByRidepallyUser(ridepallyUser).isPresent();
     }
 } 

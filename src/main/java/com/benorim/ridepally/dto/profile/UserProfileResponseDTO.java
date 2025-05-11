@@ -19,6 +19,9 @@ public class UserProfileResponseDTO {
     private String lastName;
     private String displayName;
     private String email;
+    private String city;
+    private String state;
+    private String zipCode;
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdate;
 } 

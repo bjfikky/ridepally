@@ -21,6 +21,9 @@ public final class UserProfileMapper {
                 .lastName(userProfile.getLastName())
                 .displayName(userProfile.getDisplayName())
                 .email(userProfile.getRidepallyUser().getEmail())
+                .city(userProfile.getCity())
+                .state(userProfile.getState())
+                .zipCode(userProfile.getZipCode())
                 .createdAt(userProfile.getCreatedAt())
                 .lastUpdate(userProfile.getLastUpdate())
                 .build();
