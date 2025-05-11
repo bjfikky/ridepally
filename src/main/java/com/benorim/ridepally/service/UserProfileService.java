@@ -2,6 +2,7 @@ package com.benorim.ridepally.service;
 
 import com.benorim.ridepally.dto.profile.CreateUserProfileRequestDTO;
 import com.benorim.ridepally.dto.profile.UpdateUserProfileRequestDTO;
+import com.benorim.ridepally.entity.Location;
 import com.benorim.ridepally.entity.UserProfile;
 import com.benorim.ridepally.entity.RidepallyUser;
 import com.benorim.ridepally.exception.DataOwnershipException;
@@ -33,14 +34,18 @@ public class UserProfileService {
             throw new IllegalArgumentException("Display name is already taken");
         }
 
+        Location location = Location.builder()
+                .City(request.getCity())
+                .State(request.getState())
+                .ZipCode(request.getZipCode())
+                .build();
+
         UserProfile userProfile = UserProfile.builder()
                 .ridepallyUser(ridepallyUser)
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .displayName(request.getDisplayName())
-                .city(request.getCity())
-                .state(request.getState())
-                .zipCode(request.getZipCode())
+                .location(location)
                 .build();
 
         return userProfileRepository.save(userProfile);
@@ -70,12 +75,16 @@ public class UserProfileService {
             throw new IllegalArgumentException("Display name is already taken");
         }
 
+        Location location = Location.builder()
+                .City(request.getCity())
+                .State(request.getState())
+                .ZipCode(request.getZipCode())
+                .build();
+
         userProfile.setFirstName(request.getFirstName());
         userProfile.setLastName(request.getLastName());
         userProfile.setDisplayName(request.getDisplayName());
-        userProfile.setCity(request.getCity());
-        userProfile.setState(request.getState());
-        userProfile.setZipCode(request.getZipCode());
+        userProfile.setLocation(location);
 
         return userProfileRepository.save(userProfile);
     }

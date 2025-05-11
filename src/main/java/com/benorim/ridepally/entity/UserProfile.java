@@ -47,15 +47,6 @@ public class UserProfile {
 
     private String displayName;
 
-    @Column(length = 50)
-    private String city;
-
-    @Column(length = 2)
-    private String state;
-
-    @Column(length = 10)
-    private String zipCode;
-
     @Embedded
     private Location location;
 
