@@ -188,15 +188,7 @@ http://localhost:8080/swagger-ui/index.html
 
 The API documentation includes detailed information about all endpoints, including:
 
-#### Motorcycle Management
-
-- `POST /api/motorcycles` - Add a new motorcycle
-- `POST /api/motorcycles/bulk` - Add multiple motorcycles at once (up to 10)
-- `GET /api/motorcycles` - Get all motorcycles for the current user
-- `GET /api/motorcycles/{motorcycleId}` - Get a specific motorcycle
-- `DELETE /api/motorcycles/{motorcycleId}` - Delete a motorcycle
-
-All motorcycle endpoints require authentication and proper authorization.
+Most endpoints require proper authentication and authorization
 
 ## Testing
 
