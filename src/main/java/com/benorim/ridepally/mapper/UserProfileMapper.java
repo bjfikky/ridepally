@@ -1,6 +1,7 @@
 package com.benorim.ridepally.mapper;
 
 import com.benorim.ridepally.dto.profile.UserProfileResponseDTO;
+import com.benorim.ridepally.entity.Location;
 import com.benorim.ridepally.entity.UserProfile;
 
 public final class UserProfileMapper {
@@ -21,6 +22,9 @@ public final class UserProfileMapper {
                 .lastName(userProfile.getLastName())
                 .displayName(userProfile.getDisplayName())
                 .email(userProfile.getRidepallyUser().getEmail())
+                .city(userProfile.getLocation().getCity())
+                .state(userProfile.getLocation().getState())
+                .zipCode(userProfile.getLocation().getZipCode())
                 .createdAt(userProfile.getCreatedAt())
                 .lastUpdate(userProfile.getLastUpdate())
                 .build();

@@ -37,15 +37,14 @@ public class UserProfileController {
     public ResponseEntity<UserProfileResponseDTO> createUserProfile(
             @Valid @RequestBody CreateUserProfileRequestDTO request) {
         UUID userId = authService.getSignedInUserId();
-        RidepallyUser user = userProfileService.getUserProfile(userId).getRidepallyUser();
         
-        UserProfile userProfile = userProfileService.createUserProfile(
-                user,
-                request.getFirstName(),
-                request.getLastName(),
-                request.getDisplayName()
-        );
-
+        // Check if user already has a profile
+        if (userProfileService.existsByUserId(userId)) {
+            log.info("User profile already exists for {}", userId);
+            return ResponseEntity.badRequest().build();
+        }
+        
+        UserProfile userProfile = userProfileService.createUserProfile(userId, request);
         return new ResponseEntity<>(toResponseDTO(userProfile), HttpStatus.CREATED);
     }
 
@@ -66,12 +65,7 @@ public class UserProfileController {
     public ResponseEntity<UserProfileResponseDTO> updateUserProfile(
             @PathVariable UUID userId,
             @Valid @RequestBody UpdateUserProfileRequestDTO request) {
-        UserProfile userProfile = userProfileService.updateUserProfile(
-                userId,
-                request.getFirstName(),
-                request.getLastName(),
-                request.getDisplayName()
-        );
+        UserProfile userProfile = userProfileService.updateUserProfile(userId, request);
         return ResponseEntity.ok(toResponseDTO(userProfile));
     }
 
