@@ -18,6 +18,8 @@ import java.util.Map;
 @Slf4j
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
+    public static final ObjectMapper MAPPER = new ObjectMapper();
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
@@ -32,8 +34,12 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         body.put("message", authException.getMessage());
         body.put("path", request.getServletPath());
 
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(response.getOutputStream(), body);
+        try {
+            MAPPER.writeValue(response.getOutputStream(), body);
+        } catch (IOException e) {
+            log.error("Error writing response: {}", e.getMessage());
+            // Status code is already set, no need to set it again
+        }
     }
 
 }
