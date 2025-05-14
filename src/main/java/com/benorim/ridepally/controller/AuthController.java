@@ -1,4 +1,4 @@
-package com.benorim.ridepally.api;
+package com.benorim.ridepally.controller;
 
 import com.benorim.ridepally.dto.auth.JwtResponseDTO;
 import com.benorim.ridepally.dto.auth.LoginRequestDTO;

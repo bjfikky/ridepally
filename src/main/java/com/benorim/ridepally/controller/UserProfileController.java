@@ -1,9 +1,8 @@
-package com.benorim.ridepally.api;
+package com.benorim.ridepally.controller;
 
 import com.benorim.ridepally.dto.profile.CreateUserProfileRequestDTO;
 import com.benorim.ridepally.dto.profile.UpdateUserProfileRequestDTO;
 import com.benorim.ridepally.dto.profile.UserProfileResponseDTO;
-import com.benorim.ridepally.entity.RidepallyUser;
 import com.benorim.ridepally.entity.UserProfile;
 import com.benorim.ridepally.service.AuthService;
 import com.benorim.ridepally.service.UserProfileService;
