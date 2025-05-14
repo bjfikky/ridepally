@@ -29,7 +29,7 @@ class JwtUtilsTest {
 
     @BeforeEach
     void setUp() {
-        String jwtSecret = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
+        String jwtSecret = "fake_secret5556A586E3272357538782F413F4428472B4B6250645367566B5970";
         ReflectionTestUtils.setField(jwtUtils, "jwtSecret", jwtSecret);
         // 24 hours
         int jwtExpirationMs = 86400000;
