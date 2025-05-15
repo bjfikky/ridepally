@@ -1,4 +1,4 @@
-package com.benorim.ridepally.dto;
+package com.benorim.ridepally.dto.friendship;
 
 import com.benorim.ridepally.enums.FriendshipStatus;
 import jakarta.validation.constraints.NotNull;

@@ -1,6 +1,6 @@
 package com.benorim.ridepally.mapper;
 
-import com.benorim.ridepally.dto.FriendshipResponseDTO;
+import com.benorim.ridepally.dto.friendship.FriendshipResponseDTO;
 import com.benorim.ridepally.entity.Friendship;
 
 public final class FriendshipMapper {

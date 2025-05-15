@@ -1,6 +1,6 @@
 package com.benorim.ridepally.service;
 
-import com.benorim.ridepally.dto.FriendshipActionDTO;
+import com.benorim.ridepally.dto.friendship.FriendshipActionDTO;
 import com.benorim.ridepally.entity.Friendship;
 import com.benorim.ridepally.entity.RidepallyUser;
 import com.benorim.ridepally.entity.UserProfile;

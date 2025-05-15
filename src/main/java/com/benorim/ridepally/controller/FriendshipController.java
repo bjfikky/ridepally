@@ -1,8 +1,8 @@
 package com.benorim.ridepally.controller;
 
-import com.benorim.ridepally.dto.FriendshipActionDTO;
-import com.benorim.ridepally.dto.FriendshipRequestDTO;
-import com.benorim.ridepally.dto.FriendshipResponseDTO;
+import com.benorim.ridepally.dto.friendship.FriendshipActionDTO;
+import com.benorim.ridepally.dto.friendship.FriendshipRequestDTO;
+import com.benorim.ridepally.dto.friendship.FriendshipResponseDTO;
 import com.benorim.ridepally.entity.Friendship;
 import com.benorim.ridepally.mapper.FriendshipMapper;
 import com.benorim.ridepally.service.FriendshipService;
