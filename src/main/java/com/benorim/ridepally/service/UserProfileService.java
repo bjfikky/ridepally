@@ -1,5 +1,6 @@
 package com.benorim.ridepally.service;
 
+import com.benorim.ridepally.dto.geocode.GeocodeRequestDTO;
 import com.benorim.ridepally.dto.profile.CreateUserProfileRequestDTO;
 import com.benorim.ridepally.dto.profile.UpdateUserProfileRequestDTO;
 import com.benorim.ridepally.entity.Location;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,13 +26,14 @@ public class UserProfileService {
     private final UserProfileRepository userProfileRepository;
     private final RidepallyUserRepository ridepallyUserRepository;
     private final AuthService authService;
+    private final GeocodingService geocodingService;
 
     @Transactional
     public UserProfile createUserProfile(UUID userId, CreateUserProfileRequestDTO request) {
         RidepallyUser ridepallyUser = ridepallyUserRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
-        if (userProfileRepository.existsByDisplayName(request.getDisplayName())) {
+        if (userProfileRepository.existsByDisplayNameIgnoreCase(request.getDisplayName())) {
             throw new IllegalArgumentException("Display name is already taken");
         }
 
@@ -71,7 +74,7 @@ public class UserProfileService {
 
         // Check if display name is being changed and if it's already taken
         if (!userProfile.getDisplayName().equals(request.getDisplayName()) && 
-                userProfileRepository.existsByDisplayName(request.getDisplayName())) {
+                userProfileRepository.existsByDisplayNameIgnoreCase(request.getDisplayName())) {
             throw new IllegalArgumentException("Display name is already taken");
         }
 
@@ -91,12 +94,12 @@ public class UserProfileService {
 
     @Transactional(readOnly = true)
     public Optional<UserProfile> findByDisplayName(String displayName) {
-        return userProfileRepository.findByDisplayName(displayName);
+        return userProfileRepository.findByDisplayNameIgnoreCase(displayName);
     }
 
     @Transactional(readOnly = true)
     public boolean existsByDisplayName(String displayName) {
-        return userProfileRepository.existsByDisplayName(displayName);
+        return userProfileRepository.existsByDisplayNameIgnoreCase(displayName);
     }
 
     @Transactional(readOnly = true)
@@ -104,5 +107,20 @@ public class UserProfileService {
         RidepallyUser ridepallyUser = ridepallyUserRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
         return userProfileRepository.findByRidepallyUser(ridepallyUser).isPresent();
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserProfile> findRidersByLocation(String city, String state) {
+        return userProfileRepository.findByLocationCityIgnoreCaseAndLocationStateIgnoreCase(city, state);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserProfile> findRidersByCoordinates(Double lat, Double lon) {
+        Location location = geocodingService.getLocation(new GeocodeRequestDTO(lat, lon));
+
+        return userProfileRepository.findByLocationCityIgnoreCaseAndLocationStateIgnoreCase(
+            location.getCity(), 
+            location.getState()
+        );
     }
 } 
