@@ -89,7 +89,7 @@ class UserProfileServiceTest {
     @Test
     void createUserProfile_Success() {
         when(ridepallyUserRepository.findById(userId)).thenReturn(Optional.of(ridepallyUser));
-        when(userProfileRepository.existsByDisplayName(anyString())).thenReturn(false);
+        when(userProfileRepository.existsByDisplayNameIgnoreCase(anyString())).thenReturn(false);
         when(userProfileRepository.save(any(UserProfile.class))).thenReturn(userProfile);
 
         UserProfile result = userProfileService.createUserProfile(userId, createRequest);
@@ -111,7 +111,7 @@ class UserProfileServiceTest {
     @Test
     void createUserProfile_DisplayNameTaken() {
         when(ridepallyUserRepository.findById(userId)).thenReturn(Optional.of(ridepallyUser));
-        when(userProfileRepository.existsByDisplayName(anyString())).thenReturn(true);
+        when(userProfileRepository.existsByDisplayNameIgnoreCase(anyString())).thenReturn(true);
 
         assertThrows(IllegalArgumentException.class, () -> 
             userProfileService.createUserProfile(userId, createRequest)
@@ -156,7 +156,7 @@ class UserProfileServiceTest {
         when(ridepallyUserRepository.findById(userId)).thenReturn(Optional.of(ridepallyUser));
         when(userProfileRepository.findByRidepallyUser(ridepallyUser)).thenReturn(Optional.of(userProfile));
         when(authService.isRequestMadeByLoggedInUserOrAdmin(any())).thenReturn(true);
-        when(userProfileRepository.existsByDisplayName("newdisplayname")).thenReturn(false);
+        when(userProfileRepository.existsByDisplayNameIgnoreCase("newdisplayname")).thenReturn(false);
         when(userProfileRepository.save(any(UserProfile.class))).thenReturn(userProfile);
 
         UserProfile result = userProfileService.updateUserProfile(userId, updateRequest);
@@ -184,7 +184,7 @@ class UserProfileServiceTest {
         when(ridepallyUserRepository.findById(userId)).thenReturn(Optional.of(ridepallyUser));
         when(userProfileRepository.findByRidepallyUser(ridepallyUser)).thenReturn(Optional.of(userProfile));
         when(authService.isRequestMadeByLoggedInUserOrAdmin(any())).thenReturn(true);
-        when(userProfileRepository.existsByDisplayName("takenname")).thenReturn(true);
+        when(userProfileRepository.existsByDisplayNameIgnoreCase("takenname")).thenReturn(true);
 
         assertThrows(IllegalArgumentException.class, () -> 
             userProfileService.updateUserProfile(userId, updateRequest)
@@ -194,7 +194,7 @@ class UserProfileServiceTest {
     @Test
     void findByDisplayName_Success() {
         String displayName = "johndoe";
-        when(userProfileRepository.findByDisplayName(displayName)).thenReturn(Optional.of(userProfile));
+        when(userProfileRepository.findByDisplayNameIgnoreCase(displayName)).thenReturn(Optional.of(userProfile));
 
         Optional<UserProfile> result = userProfileService.findByDisplayName(displayName);
 
@@ -205,7 +205,7 @@ class UserProfileServiceTest {
     @Test
     void existsByDisplayName_Success() {
         String displayName = "johndoe";
-        when(userProfileRepository.existsByDisplayName(displayName)).thenReturn(true);
+        when(userProfileRepository.existsByDisplayNameIgnoreCase(displayName)).thenReturn(true);
 
         boolean result = userProfileService.existsByDisplayName(displayName);
 

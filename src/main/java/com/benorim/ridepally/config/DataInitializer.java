@@ -44,7 +44,7 @@ public class DataInitializer {
     }
 
     private void createSuperAdminUser() {
-        if (!userRepository.existsByEmail(SUPER_ADMIN_EMAIL)) {
+        if (!userRepository.existsByEmailIgnoreCase(SUPER_ADMIN_EMAIL)) {
             Role superAdminRole = roleRepository.findByName(RoleType.ROLE_SUPER_ADMIN.name())
                     .orElseThrow(() -> new IllegalStateException("ROLE_SUPER_ADMIN does not exist"));
 
