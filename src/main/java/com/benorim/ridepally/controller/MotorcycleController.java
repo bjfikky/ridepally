@@ -1,4 +1,4 @@
-package com.benorim.ridepally.api;
+package com.benorim.ridepally.controller;
 
 import com.benorim.ridepally.dto.motorcycle.CreateMotorcyclesRequestDTO;
 import com.benorim.ridepally.dto.motorcycle.CreateMotorcycleRequestDTO;
