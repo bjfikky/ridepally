@@ -3,6 +3,7 @@ package com.benorim.ridepally.service;
 import com.benorim.ridepally.dto.motorcycle.CreateMotorcycleRequestDTO;
 import com.benorim.ridepally.entity.Motorcycle;
 import com.benorim.ridepally.entity.UserProfile;
+import com.benorim.ridepally.enums.ErrorCode;
 import com.benorim.ridepally.exception.DataOwnershipException;
 import com.benorim.ridepally.repository.MotorcycleRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class MotorcycleService {
         
         // Check if the user is authorized to add a motorcycle
         if (!authService.isRequestMadeByLoggedInUserOrAdmin(userProfile.getRidepallyUser())) {
-            throw new DataOwnershipException("You are not authorized to add a motorcycle to this profile");
+            throw new DataOwnershipException(ErrorCode.UNAUTHORIZED_ACTION, "You are not authorized to add a motorcycle to this profile");
         }
 
         // Check if the user already used the same nickname for one of their motorcycles
@@ -56,7 +57,7 @@ public class MotorcycleService {
         
         // Check if the user is authorized to add motorcycles
         if (!authService.isRequestMadeByLoggedInUserOrAdmin(userProfile.getRidepallyUser())) {
-            throw new DataOwnershipException("You are not authorized to add motorcycles to this profile");
+            throw new DataOwnershipException(ErrorCode.UNAUTHORIZED_ACTION, "You are not authorized to add motorcycles to this profile");
         }
 
         // Validate nicknames
@@ -95,7 +96,7 @@ public class MotorcycleService {
 
         // Check if the user is authorized to view this motorcycle
         if (!authService.isRequestMadeByLoggedInUserOrAdmin(motorcycle.getUserProfile().getRidepallyUser())) {
-            throw new DataOwnershipException("You are not authorized to view this motorcycle");
+            throw new DataOwnershipException(ErrorCode.UNAUTHORIZED_ACTION, "You are not authorized to view this motorcycle");
         }
 
         return motorcycle;
@@ -108,7 +109,7 @@ public class MotorcycleService {
 
         // Check if the user is authorized to delete this motorcycle
         if (!authService.isRequestMadeByLoggedInUserOrAdmin(motorcycle.getUserProfile().getRidepallyUser())) {
-            throw new DataOwnershipException("You are not authorized to delete this motorcycle");
+            throw new DataOwnershipException(ErrorCode.UNAUTHORIZED_ACTION, "You are not authorized to delete this motorcycle");
         }
 
         motorcycleRepository.delete(motorcycle);

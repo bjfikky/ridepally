@@ -35,4 +35,14 @@ public class GlobalExceptionHandler {
         errors.put("error", ex.getMessage());
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(BaseRidepallyException.class)
+    public ResponseEntity<Map<String, String>> handleBaseRidepallyException(BaseRidepallyException ex) {
+        log.error("Ridepally error: {} - {}", ex.getErrorCode().getCode(), ex.getMessage(), ex);
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", ex.getMessage());
+        errors.put("errorCode", ex.getErrorCode().getCode());
+        errors.put("description", ex.getErrorCode().getDescription());
+        return new ResponseEntity<>(errors, ex.getHttpStatus());
+    }
 }

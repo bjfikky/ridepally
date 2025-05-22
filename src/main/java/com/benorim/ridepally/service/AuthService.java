@@ -3,11 +3,12 @@ package com.benorim.ridepally.service;
 import com.benorim.ridepally.dto.auth.SignupRequestDTO;
 import com.benorim.ridepally.entity.RidepallyUser;
 import com.benorim.ridepally.entity.Role;
+import com.benorim.ridepally.enums.ErrorCode;
 import com.benorim.ridepally.enums.RoleType;
 import com.benorim.ridepally.exception.DataOwnershipException;
+import com.benorim.ridepally.repository.RidepallyUserRepository;
 import com.benorim.ridepally.repository.RoleRepository;
 import com.benorim.ridepally.security.services.UserDetailsImpl;
-import com.benorim.ridepally.repository.RidepallyUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,7 +62,7 @@ public class AuthService {
         // Get the current authentication
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             log.error("No authentication found");
-            throw new DataOwnershipException("No authentication found");
+            throw new DataOwnershipException(ErrorCode.UNAUTHORIZED_ACCESS, "No authentication found");
         }
 
         // Get the principal
@@ -70,7 +71,7 @@ public class AuthService {
         // Check if principal is UserDetailsImpl
         if (!(principal instanceof UserDetailsImpl currentUser)) {
             log.error("Principal is not a UserDetailsImpl: {}", principal.getClass().getName());
-            throw new DataOwnershipException("Principal is not a UserDetailsImpl");
+            throw new DataOwnershipException(ErrorCode.UNAUTHORIZED_ACCESS,"Principal is not a UserDetailsImpl");
         }
 
         return currentUser.getId();
@@ -94,17 +95,17 @@ public class AuthService {
 
     public boolean isRequestMadeByLoggedInUser(RidepallyUser user) {
         if (user == null) {
-            throw new DataOwnershipException("User not found");
+            throw new DataOwnershipException(ErrorCode.UNAUTHORIZED_ACCESS ,"User not found");
         }
         UUID signedInUserId = getSignedInUserId();
         if (signedInUserId == null) {
             log.error("User is not signed in");
-            throw new DataOwnershipException("User is not signed in");
+            throw new DataOwnershipException(ErrorCode.UNAUTHORIZED_ACCESS ,"User is not signed in");
         }
 
         if (!signedInUserId.equals(user.getId())) {
             log.error("User id mismatch");
-            throw new DataOwnershipException("User id mismatch");
+            throw new DataOwnershipException(ErrorCode.UNAUTHORIZED_ACCESS, "User id mismatch");
         }
         return true;
     }

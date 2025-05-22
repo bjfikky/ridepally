@@ -6,7 +6,9 @@ import com.benorim.ridepally.dto.profile.UpdateUserProfileRequestDTO;
 import com.benorim.ridepally.entity.Location;
 import com.benorim.ridepally.entity.UserProfile;
 import com.benorim.ridepally.entity.RidepallyUser;
+import com.benorim.ridepally.enums.ErrorCode;
 import com.benorim.ridepally.exception.DataOwnershipException;
+import com.benorim.ridepally.exception.RidepallyException;
 import com.benorim.ridepally.repository.UserProfileRepository;
 import com.benorim.ridepally.repository.RidepallyUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +33,10 @@ public class UserProfileService {
     @Transactional
     public UserProfile createUserProfile(UUID userId, CreateUserProfileRequestDTO request) {
         RidepallyUser ridepallyUser = ridepallyUserRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+                .orElseThrow(() -> new RidepallyException(ErrorCode.USER_NOT_FOUND ,"User not found with id: " + userId));
 
         if (userProfileRepository.existsByDisplayNameIgnoreCase(request.getDisplayName())) {
-            throw new IllegalArgumentException("Display name is already taken");
+            throw new RidepallyException(ErrorCode.DISPLAY_NAME_TAKEN ,"Display name is already taken");
         }
 
         Location location = Location.builder()
@@ -57,10 +59,10 @@ public class UserProfileService {
     @Transactional(readOnly = true)
     public UserProfile getUserProfile(UUID userId) {
         RidepallyUser ridepallyUser = ridepallyUserRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+                .orElseThrow(() -> new RidepallyException(ErrorCode.USER_NOT_FOUND, "User not found with id: " + userId));
 
         return userProfileRepository.findByRidepallyUser(ridepallyUser)
-                .orElseThrow(() -> new IllegalArgumentException("User profile not found for user: " + userId));
+                .orElseThrow(() -> new RidepallyException(ErrorCode.USER_NOT_FOUND ,"User profile not found for user: " + userId));
     }
 
     @Transactional
@@ -69,13 +71,13 @@ public class UserProfileService {
         
         // Check if the user is authorized to update this profile
         if (!authService.isRequestMadeByLoggedInUserOrAdmin(userProfile.getRidepallyUser())) {
-            throw new DataOwnershipException("You are not authorized to update this profile");
+            throw new DataOwnershipException(ErrorCode.UNAUTHORIZED_ACTION, "You are not authorized to update this profile");
         }
 
         // Check if display name is being changed and if it's already taken
         if (!userProfile.getDisplayName().equals(request.getDisplayName()) && 
                 userProfileRepository.existsByDisplayNameIgnoreCase(request.getDisplayName())) {
-            throw new IllegalArgumentException("Display name is already taken");
+            throw new RidepallyException(ErrorCode.DISPLAY_NAME_TAKEN ,"Display name is already taken");
         }
 
         Location location = Location.builder()
@@ -105,7 +107,7 @@ public class UserProfileService {
     @Transactional(readOnly = true)
     public boolean existsByUserId(UUID userId) {
         RidepallyUser ridepallyUser = ridepallyUserRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+                .orElseThrow(() -> new RidepallyException(ErrorCode.USER_NOT_FOUND ,"User not found with id: " + userId));
         return userProfileRepository.findByRidepallyUser(ridepallyUser).isPresent();
     }
 
