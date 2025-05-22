@@ -1,5 +1,6 @@
 package com.benorim.ridepally.service;
 
+import com.benorim.ridepally.dto.geocode.GeocodeRequestDTO;
 import com.benorim.ridepally.dto.profile.CreateUserProfileRequestDTO;
 import com.benorim.ridepally.dto.profile.UpdateUserProfileRequestDTO;
 import com.benorim.ridepally.entity.Location;
@@ -15,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,6 +42,9 @@ class UserProfileServiceTest {
     @Mock
     private AuthService authService;
 
+    @Mock
+    private GeocodingService geocodingService;
+
     @InjectMocks
     private UserProfileService userProfileService;
 
@@ -47,6 +53,10 @@ class UserProfileServiceTest {
     private UserProfile userProfile;
     private CreateUserProfileRequestDTO createRequest;
     private UpdateUserProfileRequestDTO updateRequest;
+
+    private UserProfile mockUserProfile1;
+    private UserProfile mockUserProfile2;
+    private Location mockLocation;
 
     @BeforeEach
     void setUp() {
@@ -84,6 +94,28 @@ class UserProfileServiceTest {
         updateRequest.setCity("New York");
         updateRequest.setState("NY");
         updateRequest.setZipCode("10001");
+
+        mockLocation = Location.builder()
+                .city("San Francisco")
+                .state("CA")
+                .zipCode("94105")
+                .build();
+
+        mockUserProfile1 = UserProfile.builder()
+                .id(1L)
+                .firstName("John")
+                .lastName("Doe")
+                .displayName("johndoe")
+                .location(mockLocation)
+                .build();
+
+        mockUserProfile2 = UserProfile.builder()
+                .id(2L)
+                .firstName("Jane")
+                .lastName("Smith")
+                .displayName("janesmith")
+                .location(mockLocation)
+                .build();
     }
 
     @Test
@@ -229,5 +261,75 @@ class UserProfileServiceTest {
         assertThrows(IllegalArgumentException.class, () -> 
             userProfileService.existsByUserId(userId)
         );
+    }
+
+    @Test
+    void findRidersByLocation_ShouldReturnListOfRiders() {
+        String city = "San Francisco";
+        String state = "CA";
+        List<UserProfile> expectedRiders = Arrays.asList(mockUserProfile1, mockUserProfile2);
+        
+        when(userProfileRepository.findByLocationCityIgnoreCaseAndLocationStateIgnoreCase(city, state))
+                .thenReturn(expectedRiders);
+
+        List<UserProfile> actualRiders = userProfileService.findRidersByLocation(city, state);
+
+        assertEquals(expectedRiders, actualRiders);
+        verify(userProfileRepository).findByLocationCityIgnoreCaseAndLocationStateIgnoreCase(city, state);
+    }
+
+    @Test
+    void findRidersByCoordinates_ShouldReturnListOfRiders() {
+        Double lat = 37.7749;
+        Double lon = -122.4194;
+        List<UserProfile> expectedRiders = Arrays.asList(mockUserProfile1, mockUserProfile2);
+        
+        when(geocodingService.getLocation(any(GeocodeRequestDTO.class)))
+                .thenReturn(mockLocation);
+        when(userProfileRepository.findByLocationCityIgnoreCaseAndLocationStateIgnoreCase(
+                mockLocation.getCity(), mockLocation.getState()))
+                .thenReturn(expectedRiders);
+
+        List<UserProfile> actualRiders = userProfileService.findRidersByCoordinates(lat, lon);
+
+        assertEquals(expectedRiders, actualRiders);
+        verify(geocodingService).getLocation(any(GeocodeRequestDTO.class));
+        verify(userProfileRepository).findByLocationCityIgnoreCaseAndLocationStateIgnoreCase(
+                mockLocation.getCity(), mockLocation.getState());
+    }
+
+    @Test
+    void findRidersByLocation_ShouldReturnEmptyList_WhenNoRidersFound() {
+        String city = "San Francisco";
+        String state = "CA";
+        List<UserProfile> expectedRiders = List.of();
+        
+        when(userProfileRepository.findByLocationCityIgnoreCaseAndLocationStateIgnoreCase(city, state))
+                .thenReturn(expectedRiders);
+
+        List<UserProfile> actualRiders = userProfileService.findRidersByLocation(city, state);
+
+        assertEquals(expectedRiders, actualRiders);
+        verify(userProfileRepository).findByLocationCityIgnoreCaseAndLocationStateIgnoreCase(city, state);
+    }
+
+    @Test
+    void findRidersByCoordinates_ShouldReturnEmptyList_WhenNoRidersFound() {
+        Double lat = 37.7749;
+        Double lon = -122.4194;
+        List<UserProfile> expectedRiders = List.of();
+        
+        when(geocodingService.getLocation(any(GeocodeRequestDTO.class)))
+                .thenReturn(mockLocation);
+        when(userProfileRepository.findByLocationCityIgnoreCaseAndLocationStateIgnoreCase(
+                mockLocation.getCity(), mockLocation.getState()))
+                .thenReturn(expectedRiders);
+
+        List<UserProfile> actualRiders = userProfileService.findRidersByCoordinates(lat, lon);
+
+        assertEquals(expectedRiders, actualRiders);
+        verify(geocodingService).getLocation(any(GeocodeRequestDTO.class));
+        verify(userProfileRepository).findByLocationCityIgnoreCaseAndLocationStateIgnoreCase(
+                mockLocation.getCity(), mockLocation.getState());
     }
 } 
