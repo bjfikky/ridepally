@@ -7,6 +7,7 @@ import com.benorim.ridepally.entity.Location;
 import com.benorim.ridepally.entity.RidepallyUser;
 import com.benorim.ridepally.entity.UserProfile;
 import com.benorim.ridepally.exception.DataOwnershipException;
+import com.benorim.ridepally.exception.RidepallyException;
 import com.benorim.ridepally.repository.RidepallyUserRepository;
 import com.benorim.ridepally.repository.UserProfileRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -135,7 +136,7 @@ class UserProfileServiceTest {
     void createUserProfile_UserNotFound() {
         when(ridepallyUserRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> 
+        assertThrows(RidepallyException.class, () ->
             userProfileService.createUserProfile(userId, createRequest)
         );
     }
@@ -145,7 +146,7 @@ class UserProfileServiceTest {
         when(ridepallyUserRepository.findById(userId)).thenReturn(Optional.of(ridepallyUser));
         when(userProfileRepository.existsByDisplayNameIgnoreCase(anyString())).thenReturn(true);
 
-        assertThrows(IllegalArgumentException.class, () -> 
+        assertThrows(RidepallyException.class, () ->
             userProfileService.createUserProfile(userId, createRequest)
         );
     }
@@ -165,7 +166,7 @@ class UserProfileServiceTest {
     void getUserProfile_UserNotFound() {
         when(ridepallyUserRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> 
+        assertThrows(RidepallyException.class, () ->
             userProfileService.getUserProfile(userId)
         );
     }
@@ -175,7 +176,7 @@ class UserProfileServiceTest {
         when(ridepallyUserRepository.findById(userId)).thenReturn(Optional.of(ridepallyUser));
         when(userProfileRepository.findByRidepallyUser(ridepallyUser)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> 
+        assertThrows(RidepallyException.class, () ->
             userProfileService.getUserProfile(userId)
         );
     }
@@ -218,7 +219,7 @@ class UserProfileServiceTest {
         when(authService.isRequestMadeByLoggedInUserOrAdmin(any())).thenReturn(true);
         when(userProfileRepository.existsByDisplayNameIgnoreCase("takenname")).thenReturn(true);
 
-        assertThrows(IllegalArgumentException.class, () -> 
+        assertThrows(RidepallyException.class, () ->
             userProfileService.updateUserProfile(userId, updateRequest)
         );
     }
@@ -258,7 +259,7 @@ class UserProfileServiceTest {
     void existsByUserId_UserNotFound() {
         when(ridepallyUserRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> 
+        assertThrows(RidepallyException.class, () ->
             userProfileService.existsByUserId(userId)
         );
     }

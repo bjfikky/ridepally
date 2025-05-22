@@ -3,6 +3,7 @@ package com.benorim.ridepally.service;
 import com.benorim.ridepally.dto.friendship.FriendshipActionDTO;
 import com.benorim.ridepally.entity.Friendship;
 import com.benorim.ridepally.entity.UserProfile;
+import com.benorim.ridepally.enums.ErrorCode;
 import com.benorim.ridepally.enums.FriendshipStatus;
 import com.benorim.ridepally.exception.DataOwnershipException;
 import com.benorim.ridepally.repository.FriendshipRepository;
@@ -50,7 +51,7 @@ public class FriendshipService {
                 .orElseThrow(() -> new EntityNotFoundException("Friendship request not found"));
 
         if (!friendship.getReceiver().equals(currentUser)) {
-            throw new DataOwnershipException("Not authorized to respond to this request");
+            throw new DataOwnershipException(ErrorCode.UNAUTHORIZED_ACTION, "Not authorized to respond to this request");
         }
 
         if (friendship.getStatus() != FriendshipStatus.PENDING) {
