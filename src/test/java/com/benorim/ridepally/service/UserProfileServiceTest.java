@@ -55,9 +55,9 @@ class UserProfileServiceTest {
         ridepallyUser.setId(userId);
 
         Location location = Location.builder()
-                .City("New York")
-                .State("NY")
-                .ZipCode("10001")
+                .city("New York")
+                .state("NY")
+                .zipCode("10001")
                 .build();
 
         userProfile = UserProfile.builder()

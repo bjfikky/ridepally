@@ -38,9 +38,9 @@ public class UserProfileService {
         }
 
         Location location = Location.builder()
-                .City(request.getCity())
-                .State(request.getState())
-                .ZipCode(request.getZipCode())
+                .city(request.getCity())
+                .state(request.getState())
+                .zipCode(request.getZipCode())
                 .build();
 
         UserProfile userProfile = UserProfile.builder()
@@ -79,9 +79,9 @@ public class UserProfileService {
         }
 
         Location location = Location.builder()
-                .City(request.getCity())
-                .State(request.getState())
-                .ZipCode(request.getZipCode())
+                .city(request.getCity())
+                .state(request.getState())
+                .zipCode(request.getZipCode())
                 .build();
 
         userProfile.setFirstName(request.getFirstName());

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Builder
 @Embeddable
 public class Location {
-    private String City;
-    private String State;
-    private String ZipCode;
+    private String city;
+    private String state;
+    private String zipCode;
 }
