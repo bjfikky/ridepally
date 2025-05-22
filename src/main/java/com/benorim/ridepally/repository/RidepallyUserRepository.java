@@ -12,8 +12,8 @@ import java.util.UUID;
 
 @Repository
 public interface RidepallyUserRepository extends JpaRepository<RidepallyUser, UUID> {
-    Optional<RidepallyUser> findByEmail(String email);
-    Boolean existsByEmail(String email);
+    Optional<RidepallyUser> findByEmailIgnoreCase(String email);
+    Boolean existsByEmailIgnoreCase(String email);
 
     @Query("SELECT c FROM RidepallyUser c INNER JOIN c.roles r WHERE r.name = :roleName")
     List<RidepallyUser> findByRole(@Param("roleName") String roleName);

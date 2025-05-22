@@ -54,7 +54,7 @@ class UserDetailsServiceImplTest {
 
     @Test
     void loadUserByUsername_UserExists_ReturnsUserDetails() {
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
+        when(userRepository.findByEmailIgnoreCase("test@example.com")).thenReturn(Optional.of(testUser));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername("test@example.com");
 
@@ -72,7 +72,7 @@ class UserDetailsServiceImplTest {
 
     @Test
     void loadUserByUsername_UserNotFound_ThrowsException() {
-        when(userRepository.findByEmail("nonexistent@example.com")).thenReturn(Optional.empty());
+        when(userRepository.findByEmailIgnoreCase("nonexistent@example.com")).thenReturn(Optional.empty());
 
         assertThrows(UsernameNotFoundException.class, () -> 
             userDetailsService.loadUserByUsername("nonexistent@example.com")
@@ -82,7 +82,7 @@ class UserDetailsServiceImplTest {
     @Test
     void loadUserByUsername_UserDisabled_ReturnsDisabledUserDetails() {
         testUser.setEnabled(false);
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
+        when(userRepository.findByEmailIgnoreCase("test@example.com")).thenReturn(Optional.of(testUser));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername("test@example.com");
 
@@ -93,7 +93,7 @@ class UserDetailsServiceImplTest {
     @Test
     void loadUserByUsername_UserLocked_ReturnsLockedUserDetails() {
         testUser.setAccountNonLocked(false);
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
+        when(userRepository.findByEmailIgnoreCase("test@example.com")).thenReturn(Optional.of(testUser));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername("test@example.com");
 
@@ -104,7 +104,7 @@ class UserDetailsServiceImplTest {
     @Test
     void loadUserByUsername_UserExpired_ReturnsExpiredUserDetails() {
         testUser.setAccountNonExpired(false);
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
+        when(userRepository.findByEmailIgnoreCase("test@example.com")).thenReturn(Optional.of(testUser));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername("test@example.com");
 
@@ -115,7 +115,7 @@ class UserDetailsServiceImplTest {
     @Test
     void loadUserByUsername_UserCredentialsExpired_ReturnsCredentialsExpiredUserDetails() {
         testUser.setCredentialsNonExpired(false);
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
+        when(userRepository.findByEmailIgnoreCase("test@example.com")).thenReturn(Optional.of(testUser));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername("test@example.com");
 

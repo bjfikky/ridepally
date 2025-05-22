@@ -1,9 +1,12 @@
 package com.benorim.ridepally.controller;
 
 import com.benorim.ridepally.dto.profile.CreateUserProfileRequestDTO;
+import com.benorim.ridepally.dto.profile.FindRidersByCoordinatesRequestDTO;
+import com.benorim.ridepally.dto.profile.FindRidersRequestDTO;
 import com.benorim.ridepally.dto.profile.UpdateUserProfileRequestDTO;
 import com.benorim.ridepally.dto.profile.UserProfileResponseDTO;
 import com.benorim.ridepally.entity.UserProfile;
+import com.benorim.ridepally.mapper.UserProfileMapper;
 import com.benorim.ridepally.service.AuthService;
 import com.benorim.ridepally.service.UserProfileService;
 import jakarta.validation.Valid;
@@ -19,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.benorim.ridepally.mapper.UserProfileMapper.toResponseDTO;
 
@@ -72,5 +77,25 @@ public class UserProfileController {
     public ResponseEntity<Boolean> checkDisplayNameAvailability(@PathVariable String displayName) {
         boolean isAvailable = !userProfileService.existsByDisplayName(displayName);
         return ResponseEntity.ok(isAvailable);
+    }
+
+    @PostMapping("/find-riders")
+    public ResponseEntity<List<UserProfileResponseDTO>> findRidersByLocation(
+            @Valid @RequestBody FindRidersRequestDTO request) {
+        List<UserProfile> riders = userProfileService.findRidersByLocation(request.getCity(), request.getState());
+        List<UserProfileResponseDTO> response = riders.stream()
+                .map(UserProfileMapper::toResponseDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/find-riders-by-coordinates")
+    public ResponseEntity<List<UserProfileResponseDTO>> findRidersByCoordinates(
+            @Valid @RequestBody FindRidersByCoordinatesRequestDTO request) {
+        List<UserProfile> riders = userProfileService.findRidersByCoordinates(request.getLat(), request.getLon());
+        List<UserProfileResponseDTO> response = riders.stream()
+                .map(UserProfileMapper::toResponseDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 } 
