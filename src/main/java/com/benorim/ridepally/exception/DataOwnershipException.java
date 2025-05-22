@@ -1,11 +1,18 @@
 package com.benorim.ridepally.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.benorim.ridepally.enums.ErrorCode;
 
-@ResponseStatus(HttpStatus.FORBIDDEN)
-public class DataOwnershipException extends RuntimeException {
-    public DataOwnershipException(String message) {
-        super(message);
+public class DataOwnershipException extends BaseRidepallyException {
+
+    public DataOwnershipException(ErrorCode errorCode) {
+        super(errorCode);
+    }
+
+    public DataOwnershipException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
+    }
+
+    public DataOwnershipException(ErrorCode errorCode, String message, Throwable cause) {
+        super(errorCode, message, cause);
     }
 }
